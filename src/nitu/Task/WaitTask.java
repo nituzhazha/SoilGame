@@ -27,26 +27,24 @@ public class WaitTask extends Task {
 
     public int givetime;
 
+    public String RoomName;
 
-    public WaitTask(main s , int t){
+
+    public WaitTask(main s , int t , String r){
         se = s;
         time = t;
         givetime = t-5;
+        RoomName = r;
     }
-
-    public Config GS() {
-        File level = new File(se.getDataFolder() + "/GameSetting.yml");
-        return new Config(level);
-    }
-
 
     public Config GD() {
-        File GameDynamicData = new File(se.getDataFolder() + "/GameDynamicData.yml");
+        File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
     }
 
-    public String levelName() {
-        return GS().get("游戏地图名字").toString();
+    public Config GS() {
+        File level = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameSetting.yml");
+        return new Config(level);
     }
 
 
@@ -100,7 +98,7 @@ public class WaitTask extends Task {
 
     public String[] name(){
         ArrayList<String> list = (ArrayList<String>) GD().get("等待玩家");
-        return new String[]{"§7Soil§5Game" , "§3点击加入" , "游戏中"};
+        return new String[]{"§7Soil§5Game" , "§e房间" + "§3" + RoomName , "游戏中"};
     }
 
 
@@ -143,7 +141,7 @@ public class WaitTask extends Task {
 
         HashMap<String , Double> p = (HashMap<String, Double>) GS().get(name + "出生点");
 
-        Position pos = new Position(p.get("x") , p.get("y") , p.get("z") , se.getServer().getLevelByName(levelName()));
+        Position pos = new Position(p.get("x") , p.get("y") , p.get("z") , se.getServer().getLevelByName(RoomName));
 
         CompoundTag tag = Entity.getDefaultNBT(new Vector3(p.get("x") , p.get("y") , p.get("z")));
 
@@ -177,12 +175,12 @@ public class WaitTask extends Task {
         for(String pn : pls){
 
             if(arr1.contains(pn)){
-                se.getServer().getPlayer(pn).teleport(new Position(arr3.get("x") , arr3.get("y") , arr3.get("z") , se.getServer().getLevelByName(levelName())));
+                se.getServer().getPlayer(pn).teleport(new Position(arr3.get("x") , arr3.get("y") , arr3.get("z") , se.getServer().getLevelByName(RoomName)));
                 se.getServer().getPlayer(pn).setSpawn(new Vector3(arr3.get("x") , arr3.get("y") , arr3.get("z")));
             }
 
             if(arr2.contains(pn)){
-                se.getServer().getPlayer(pn).teleport(new Position(arr4.get("x") , arr4.get("y") , arr4.get("z") , se.getServer().getLevelByName(levelName())));
+                se.getServer().getPlayer(pn).teleport(new Position(arr4.get("x") , arr4.get("y") , arr4.get("z") , se.getServer().getLevelByName(RoomName)));
                 se.getServer().getPlayer(pn).setSpawn(new Vector3(arr4.get("x") , arr4.get("y") , arr4.get("z")));
             }
 
@@ -209,7 +207,7 @@ public class WaitTask extends Task {
             gd.set("蓝方队员" , arr2);
             gd.set("红方队员" , arr3);
             gd.save();
-            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se) , 20);
+            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName) , 20);
             this.getHandler().cancel();
         }
 
@@ -243,7 +241,7 @@ public class WaitTask extends Task {
 
              pll("游戏开始");
              tp();
-             se.getServer().getScheduler().scheduleRepeatingTask(new GameTask(se , Integer.parseInt(GS().get("游戏时间").toString()) , sellerSet("红队商人") , sellerSet("蓝队商人")) , 20);
+             se.getServer().getScheduler().scheduleRepeatingTask(new GameTask(se , Integer.parseInt(GS().get("游戏时间").toString()) , sellerSet("红队商人") , sellerSet("蓝队商人") , RoomName) , 20);
              this.getHandler().cancel();
          }
 

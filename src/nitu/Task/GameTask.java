@@ -24,28 +24,26 @@ public class GameTask extends Task {
     public int time;
     public long i1;
     public long i2;
+    public String RoomName;
 
-    public GameTask(main s, int t , long i , long ii) {
+    public GameTask(main s, int t , long i , long ii , String r) {
         se = s;
         time = t;
         i1 = i;
         i2 = ii;
+        RoomName = r;
     }
-
-    public Config GS() {
-        File level = new File(se.getDataFolder() + "/GameSetting.yml");
-        return new Config(level);
-    }
-
 
     public Config GD() {
-        File GameDynamicData = new File(se.getDataFolder() + "/GameDynamicData.yml");
+        File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
     }
 
-    public String levelName() {
-        return GS().get("游戏地图名字").toString();
+    public Config GS() {
+        File level = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameSetting.yml");
+        return new Config(level);
     }
+
 
 
     public void pl(int t) {
@@ -107,12 +105,12 @@ public class GameTask extends Task {
 
     public void change(){
 
-        se.getServer().unloadLevel(se.getServer().getLevelByName(levelName()));
-        File level = new File(se.getServer().getDataPath() + "worlds/" + levelName());
+        se.getServer().unloadLevel(se.getServer().getLevelByName(RoomName));
+        File level = new File(se.getServer().getDataPath() + "worlds/" + RoomName);
         delall(level);
             copy cy = new copy();
-            String to = se.getServer().getDataPath() + "worlds/" + levelName();
-            String from = se.getDataFolder() + "/" + levelName();
+            String to = se.getServer().getDataPath() + "worlds/" + RoomName;
+            String from = se.getDataFolder() + "/Rooms/" + RoomName + "/" + RoomName;
             cy.copyDir(from, to);
     }
 
@@ -215,7 +213,7 @@ public class GameTask extends Task {
         Vector3 vec3 = new Vector3(ra1, ra2, ra3);
 
 
-        se.getServer().getLevelByName(levelName()).setBlock(vec3, block);
+        se.getServer().getLevelByName(RoomName).setBlock(vec3, block);
 
     }
 
@@ -296,7 +294,7 @@ public class GameTask extends Task {
         Vector3 vec3 = new Vector3(ra1, ra2, ra3);
 
 
-        se.getServer().getLevelByName(levelName()).setBlock(vec3, block);
+        se.getServer().getLevelByName(RoomName).setBlock(vec3, block);
 
     }
 
@@ -377,7 +375,7 @@ public class GameTask extends Task {
         Vector3 vec3 = new Vector3(ra1, ra2, ra3);
 
 
-        se.getServer().getLevelByName(levelName()).setBlock(vec3, block);
+        se.getServer().getLevelByName(RoomName).setBlock(vec3, block);
 
     }
 
@@ -452,7 +450,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new WaterParticle(new Vector3(x, smy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new WaterParticle(new Vector3(x, smy, z)));
 
                 }
 
@@ -462,7 +460,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new WaterParticle(new Vector3(x, biy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new WaterParticle(new Vector3(x, biy, z)));
 
                 }
 
@@ -541,7 +539,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new WaterParticle(new Vector3(x, biy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new WaterParticle(new Vector3(x, biy, z)));
 
                 }
 
@@ -623,7 +621,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new LavaDripParticle(new Vector3(x, smy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new LavaDripParticle(new Vector3(x, smy, z)));
 
                 }
 
@@ -633,7 +631,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new LavaDripParticle(new Vector3(x, biy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new LavaDripParticle(new Vector3(x, biy, z)));
 
                 }
 
@@ -713,7 +711,7 @@ public class GameTask extends Task {
 
                 for (Double z = smz; z <= biz; z++) {
 
-                    se.getServer().getLevelByName(levelName()).addParticle(new LavaDripParticle(new Vector3(x, biy, z)));
+                    se.getServer().getLevelByName(RoomName).addParticle(new LavaDripParticle(new Vector3(x, biy, z)));
 
                 }
 
@@ -767,14 +765,14 @@ public class GameTask extends Task {
                 remove(i2, pl);
             }
 
-            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se), 20);
+            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName), 20);
 
             change();
-            se.getServer().loadLevel(levelName());
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS, true);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_TILE_DROPS, true);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.PVP, true);
+            se.getServer().loadLevel(RoomName);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS, true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_TILE_DROPS, true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.PVP, true);
             this.getHandler().cancel();
         }//无人重开
 
@@ -793,8 +791,8 @@ public class GameTask extends Task {
 
 
         if(time == 2){
-            se.getServer().getScheduler().scheduleAsyncTask(se , new blue(se));
-            se.getServer().getScheduler().scheduleAsyncTask(se , new red(se));
+            se.getServer().getScheduler().scheduleAsyncTask(se , new blue(se , RoomName));
+            se.getServer().getScheduler().scheduleAsyncTask(se , new red(se , RoomName));
         }
 
 
@@ -837,14 +835,14 @@ public class GameTask extends Task {
                 remove(i2 , pl);
             }
 
-            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se) , 20);
+            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName) , 20);
 
             change();
-            se.getServer().loadLevel(levelName());
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE , false);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS , true);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.DO_TILE_DROPS , true);
-            se.getServer().getLevelByName(levelName()).gameRules.setGameRule(GameRule.PVP , true);
+            se.getServer().loadLevel(RoomName);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE , false);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS , true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_TILE_DROPS , true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.PVP , true);
             this.getHandler().cancel();
         }
 

@@ -11,25 +11,23 @@ import java.util.HashMap;
 public class blue extends AsyncTask {
 
     public main se;
+    public String RoomName;
 
-    public blue(main s) {
-        se = s;
+    public blue(main s , String r){
+    RoomName = r;
+    se = s;
     }
-
-    public Config GS() {
-        File level = new File(se.getDataFolder() + "/GameSetting.yml");
-        return new Config(level);
-    }
-
 
     public Config GD() {
-        File GameDynamicData = new File(se.getDataFolder() + "/GameDynamicData.yml");
+        File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
     }
 
-    public String levelName() {
-        return GS().get("游戏地图名字").toString();
+    public Config GS() {
+        File level = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameSetting.yml");
+        return new Config(level);
     }
+
 
 
     public void bluenum() {
@@ -108,21 +106,21 @@ public class blue extends AsyncTask {
                     for (Double y = smy; y <= biy; y++) {
 
 
-                            if (se.getServer().getLevelByName(levelName()).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 2) {
+                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 2) {
 
                                 gd.set("蓝方分数", num + 2);
                                 gd.save();
 
                             }
 
-                            if (se.getServer().getLevelByName(levelName()).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 3) {
+                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 3) {
 
                                 gd.set("蓝方分数", num + 1);
                                 gd.save();
 
                             }
 
-                            if (se.getServer().getLevelByName(levelName()).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 82) {
+                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 82) {
 
                                 gd.set("蓝方分数", num + 3);
                                 gd.save();

@@ -17,255 +17,275 @@ import nitu.event.goods;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class main extends PluginBase {
 
     public void onLoad() {
 
-        File level = new File(this.getDataFolder() + "/GameSetting.yml");
-        File GameDynamicData = new File(this.getDataFolder() + "/GameDynamicData.yml");
+        File rooms = new File(this.getDataFolder() + "/Rooms");
         File CmdDynamicData = new File(this.getDataFolder() + "/CmdDynamicData.yml");
-
-        if (!level.exists()) {
-            ConfigSection list = new ConfigSection();
-
-            HashMap<String, Double> blue = new HashMap<>();//蓝队
-            blue.put("x", null);
-            blue.put("y", null);
-            blue.put("z", null);
-
-            HashMap<String, Double> red = new HashMap<>();//红队
-            red.put("x", null);
-            red.put("y", null);
-            red.put("z", null);
-
-            HashMap<String, Double> bluesr = new HashMap<>();//蓝队商人
-            bluesr.put("x", null);
-            bluesr.put("y", null);
-            bluesr.put("z", null);
-
-            HashMap<String, Double> redsr = new HashMap<>();//红队商人
-            redsr.put("x", null);
-            redsr.put("y", null);
-            redsr.put("z", null);
-
-            HashMap<String, HashMap<String, Double>> bluedt = new HashMap<>();//蓝队的堆泥土区域
-
-            HashMap<String, Double> bdt1 = new HashMap<>();
-            bdt1.put("x", null);
-            bdt1.put("y", null);
-            bdt1.put("z", null);
-            HashMap<String, Double> bdt2 = new HashMap<>();
-            bdt2.put("x", null);
-            bdt2.put("y", null);
-            bdt2.put("z", null);
-
-            bluedt.put("first", bdt1);
-            bluedt.put("second", bdt2);
-
-
-            HashMap<String, HashMap<String, Double>> reddt = new HashMap<>();//红队的堆泥土区域
-
-            HashMap<String, Double> rdt1 = new HashMap<>();
-            rdt1.put("x", null);
-            rdt1.put("y", null);
-            rdt1.put("z", null);
-            HashMap<String, Double> rdt2 = new HashMap<>();
-            rdt2.put("x", null);
-            rdt2.put("y", null);
-            rdt2.put("z", null);
-
-            reddt.put("first", rdt1);
-            reddt.put("second", rdt2);
-
-            HashMap<String, HashMap<String, Double>> std = new HashMap<>();//刷新泥土的区域
-
-            HashMap<String, Double> std1 = new HashMap<>();
-            std1.put("x", null);
-            std1.put("y", null);
-            std1.put("z", null);
-            HashMap<String, Double> std2 = new HashMap<>();
-            std2.put("x", null);
-            std2.put("y", null);
-            std2.put("z", null);
-
-            std.put("first", std1);
-            std.put("second", std2);
-
-
-            HashMap<String, HashMap<String, Double>> bst = new HashMap<>();//蓝队刷新泥土的区域
-
-            HashMap<String, Double> bst1 = new HashMap<>();
-            bst1.put("x", null);
-            bst1.put("y", null);
-            bst1.put("z", null);
-            HashMap<String, Double> bst2 = new HashMap<>();
-            bst2.put("x", null);
-            bst2.put("y", null);
-            bst2.put("z", null);
-
-            bst.put("first", bst1);
-            bst.put("second", bst2);
-
-
-            HashMap<String, HashMap<String, Double>> rst = new HashMap<>();//红队刷新泥土的区域
-
-            HashMap<String, Double> rst1 = new HashMap<>();
-            rst1.put("x", null);
-            rst1.put("y", null);
-            rst1.put("z", null);
-            HashMap<String, Double> rst2 = new HashMap<>();
-            rst2.put("x", null);
-            rst2.put("y", null);
-            rst2.put("z", null);
-
-            rst.put("first", rst1);
-            rst.put("second", rst2);
-
-            HashMap<String, Double> dd = new HashMap<>();//等待时的位置
-            dd.put("x", null);
-            dd.put("y", null);
-            dd.put("z", null);
-
-            HashMap<String, Double> pz = new HashMap<>();//进入游戏点击的牌子的位置
-            pz.put("x", null);
-            pz.put("y", null);
-            pz.put("z", null);
-
-            list.put("游戏地图名字", "SoilGame");
-            list.put("最大玩家数量", 2);
-            list.put("最小玩家数量", 1);
-            list.put("等待时间", 20);
-            list.put("游戏时间", 60);
-            list.put("等待区域", dd);
-            list.put("蓝队出生点", blue);
-            list.put("红队出生点", red);
-            list.put("蓝队商人出生点", bluesr);
-            list.put("红队商人出生点", redsr);
-            list.put("蓝队堆土点", bluedt);
-            list.put("红队堆土点", reddt);
-            list.put("刷新泥土区域", std);
-            list.put("蓝队刷新泥土区域", bst);
-            list.put("红队刷新泥土区域", rst);
-            list.put("牌子的位置", pz);
-            list.put("牌子的地图", null);
-
-            new Config(level, 2, list);
-
-            list.clear();
-            this.getServer().getLogger().info("配置文件初始化成功！");
-        }
-
-
-        if (!GameDynamicData.exists()) {
-            ConfigSection list = new ConfigSection();
-
-            ArrayList<String> waitplayers = new ArrayList<>();
-            ArrayList<String> players = new ArrayList<>();
-            ArrayList<String> bplayers = new ArrayList<>();
-            ArrayList<String> rplayers = new ArrayList<>();
-
-            list.put("等待玩家", waitplayers);
-            list.put("玩家", players);
-            list.put("蓝方队员", bplayers);
-            list.put("红方队员", rplayers);
-            list.put("蓝方分数",0);
-            list.put("红方分数", 0);
-            list.put("游戏是否开始", false);
-
-            new Config(GameDynamicData, 2, list);
-
-            list.clear();
-            this.getServer().getLogger().info("游戏动态文件初始化成功！");
-        }
-
 
         if (!CmdDynamicData.exists()) {
             ConfigSection list = new ConfigSection();
 
             list.put("选择牌子", false);
+            list.put("游戏房间", null);
 
             new Config(CmdDynamicData, 2, list);
 
             list.clear();
-            this.getServer().getLogger().info("指令动态文件初始化成功！");
+            this.getServer().getLogger().info("[SoilGame]指令动态文件初始化成功！");
         }
 
-    }
 
-    public Config GS() {
-        File level = new File(this.getDataFolder() + "/GameSetting.yml");
-        return new Config(level);
-    }
+        if (!rooms.exists()) {
+            rooms.mkdirs();
+        }
 
-    public Config GD() {
-        File GameDynamicData = new File(this.getDataFolder() + "/GameDynamicData.yml");
-        return new Config(GameDynamicData);
-    }
+            if(Objects.requireNonNull(rooms.listFiles()).length == 0){
+                this.getServer().getLogger().info("[SoilGame]当前无游戏房间");
+            }else{
 
-    public Config CD() {
-        File CmdDynamicData = new File(this.getDataFolder() + "/CmdDynamicData.yml");
-        return new Config(CmdDynamicData);
-    }
+                for(File room : Objects.requireNonNull(rooms.listFiles())) { //一个一个列出rooms里的所有房间
 
-    public String levelName() {
-        return GS().get("游戏地图名字").toString();
-    }
+                    String rom = room.getName().trim();
 
-    public void onEnable() {
+                    File level = new File(this.getDataFolder() + "/Rooms/" + rom + "/GameSetting.yml");
+                    File GameDynamicData = new File(this.getDataFolder() + "/Rooms/" + rom +  "/GameDynamicData.yml");
 
-        this.getServer().loadLevel("SoilGame");
 
-        if (this.getServer().getLevelByName(levelName()) == null) {
-            this.getServer().getLogger().info("未检测到游戏地图" + levelName() + "插件已经关闭");
-            this.getPluginLoader().disablePlugin(this);
-        } else {
+                    if (!level.exists()) {
+                        ConfigSection list = new ConfigSection();
 
-            File level = new File(this.getDataFolder() + "/" + levelName());
+                        HashMap<String, Double> blue = new HashMap<>();//蓝队
+                        blue.put("x", null);
+                        blue.put("y", null);
+                        blue.put("z", null);
 
-            if(!level.isDirectory() || !level.exists()){
-                copy cy = new copy();
-                String from = this.getServer().getDataPath() + "worlds/" + levelName();
-                String to = this.getDataFolder() + "/" + levelName();
-                cy.copyDir(from , to);
-                this.getServer().getLogger().info("地图存储成功");
+                        HashMap<String, Double> red = new HashMap<>();//红队
+                        red.put("x", null);
+                        red.put("y", null);
+                        red.put("z", null);
+
+                        HashMap<String, Double> bluesr = new HashMap<>();//蓝队商人
+                        bluesr.put("x", null);
+                        bluesr.put("y", null);
+                        bluesr.put("z", null);
+
+                        HashMap<String, Double> redsr = new HashMap<>();//红队商人
+                        redsr.put("x", null);
+                        redsr.put("y", null);
+                        redsr.put("z", null);
+
+                        HashMap<String, HashMap<String, Double>> bluedt = new HashMap<>();//蓝队的堆泥土区域
+
+                        HashMap<String, Double> bdt1 = new HashMap<>();
+                        bdt1.put("x", null);
+                        bdt1.put("y", null);
+                        bdt1.put("z", null);
+                        HashMap<String, Double> bdt2 = new HashMap<>();
+                        bdt2.put("x", null);
+                        bdt2.put("y", null);
+                        bdt2.put("z", null);
+
+                        bluedt.put("first", bdt1);
+                        bluedt.put("second", bdt2);
+
+
+                        HashMap<String, HashMap<String, Double>> reddt = new HashMap<>();//红队的堆泥土区域
+
+                        HashMap<String, Double> rdt1 = new HashMap<>();
+                        rdt1.put("x", null);
+                        rdt1.put("y", null);
+                        rdt1.put("z", null);
+                        HashMap<String, Double> rdt2 = new HashMap<>();
+                        rdt2.put("x", null);
+                        rdt2.put("y", null);
+                        rdt2.put("z", null);
+
+                        reddt.put("first", rdt1);
+                        reddt.put("second", rdt2);
+
+                        HashMap<String, HashMap<String, Double>> std = new HashMap<>();//刷新泥土的区域
+
+                        HashMap<String, Double> std1 = new HashMap<>();
+                        std1.put("x", null);
+                        std1.put("y", null);
+                        std1.put("z", null);
+                        HashMap<String, Double> std2 = new HashMap<>();
+                        std2.put("x", null);
+                        std2.put("y", null);
+                        std2.put("z", null);
+
+                        std.put("first", std1);
+                        std.put("second", std2);
+
+
+                        HashMap<String, HashMap<String, Double>> bst = new HashMap<>();//蓝队刷新泥土的区域
+
+                        HashMap<String, Double> bst1 = new HashMap<>();
+                        bst1.put("x", null);
+                        bst1.put("y", null);
+                        bst1.put("z", null);
+                        HashMap<String, Double> bst2 = new HashMap<>();
+                        bst2.put("x", null);
+                        bst2.put("y", null);
+                        bst2.put("z", null);
+
+                        bst.put("first", bst1);
+                        bst.put("second", bst2);
+
+
+                        HashMap<String, HashMap<String, Double>> rst = new HashMap<>();//红队刷新泥土的区域
+
+                        HashMap<String, Double> rst1 = new HashMap<>();
+                        rst1.put("x", null);
+                        rst1.put("y", null);
+                        rst1.put("z", null);
+                        HashMap<String, Double> rst2 = new HashMap<>();
+                        rst2.put("x", null);
+                        rst2.put("y", null);
+                        rst2.put("z", null);
+
+                        rst.put("first", rst1);
+                        rst.put("second", rst2);
+
+                        HashMap<String, Double> dd = new HashMap<>();//等待时的位置
+                        dd.put("x", null);
+                        dd.put("y", null);
+                        dd.put("z", null);
+
+                        HashMap<String, Double> pz = new HashMap<>();//进入游戏点击的牌子的位置
+                        pz.put("x", null);
+                        pz.put("y", null);
+                        pz.put("z", null);
+
+                        list.put("游戏地图名字", rom);
+                        list.put("最大玩家数量", 2);
+                        list.put("最小玩家数量", 1);
+                        list.put("等待时间", 20);
+                        list.put("游戏时间", 60);
+                        list.put("等待区域", dd);
+                        list.put("蓝队出生点", blue);
+                        list.put("红队出生点", red);
+                        list.put("蓝队商人出生点", bluesr);
+                        list.put("红队商人出生点", redsr);
+                        list.put("蓝队堆土点", bluedt);
+                        list.put("红队堆土点", reddt);
+                        list.put("刷新泥土区域", std);
+                        list.put("蓝队刷新泥土区域", bst);
+                        list.put("红队刷新泥土区域", rst);
+                        list.put("牌子的位置", pz);
+                        list.put("牌子的地图", null);
+
+                        new Config(level, 2, list);
+
+                        list.clear();
+                        this.getServer().getLogger().info("[SoilGame]房间" + rom + "的配置文件初始化成功！");
+                    }
+
+
+                    if (!GameDynamicData.exists()) {
+                        ConfigSection list = new ConfigSection();
+
+                        ArrayList<String> waitplayers = new ArrayList<>();
+                        ArrayList<String> players = new ArrayList<>();
+                        ArrayList<String> bplayers = new ArrayList<>();
+                        ArrayList<String> rplayers = new ArrayList<>();
+
+                        list.put("等待玩家", waitplayers);
+                        list.put("玩家", players);
+                        list.put("蓝方队员", bplayers);
+                        list.put("红方队员", rplayers);
+                        list.put("蓝方分数", 0);
+                        list.put("红方分数", 0);
+                        list.put("游戏是否开始", false);
+
+                        new Config(GameDynamicData, 2, list);
+
+                        list.clear();
+                        this.getServer().getLogger().info("[SoilGame]房间" + rom + "的游戏动态文件初始化成功！");
+                    }
+                }
+            }
+        }
+
+        public Config GS (String r) {
+            File level = new File(this.getDataFolder() + "/Rooms/" + r + "/GameSetting.yml");
+            return new Config(level);
+        }
+
+        public Config GD (String r) {
+            File GameDynamicData = new File(this.getDataFolder() + "/Rooms/" + r + "/GameDynamicData.yml");
+            return new Config(GameDynamicData);
+        }
+
+        public Config CD () {
+            File CmdDynamicData = new File(this.getDataFolder() + "/CmdDynamicData.yml");
+           return new Config(CmdDynamicData);
+        }
+
+        public File RMS () {
+            return new File(this.getDataFolder() + "/Rooms");
+        }
+
+
+        public ArrayList<String> ROS(){
+        ArrayList<String> list = new ArrayList<>();
+
+            for(File room : Objects.requireNonNull(RMS().listFiles())) {
+                list.add(room.getName().trim());
             }
 
-            Entity.registerEntity("seller" , seller.class);
-            this.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(this) , 20);//每秒检测
-            this.getServer().getPluginManager().registerEvents(new eventListener(this), this);
-            this.getServer().getPluginManager().registerEvents(new goods(), this);
-            this.getServer().getLogger().info("加载成功  by:nitu QQ:1010340249");
+            return list;
         }
-    }
 
 
-    public void onDisable(){
+        public void onEnable () {
 
-        Config gd = GD();
-        ArrayList<String> arr1 = (ArrayList<String>) GD().get("玩家");
-        ArrayList<String> arr2 = (ArrayList<String>) GD().get("蓝方队员");
-        ArrayList<String> arr3 = (ArrayList<String>) GD().get("红方队员");
-        arr1.removeAll(arr1);
-        arr2.removeAll(arr2);
-        arr3.removeAll(arr3);
-        gd.set("玩家", arr1);
-        gd.set("游戏是否开始", false);
-        gd.set("蓝方队员", arr2);
-        gd.set("红方队员", arr3);
-        gd.set("蓝方分数", 0);
-        gd.set("红方分数", 0);
-        gd.save();
 
-        this.getServer().getLogger().info("关闭成功  by:nitu QQ:1010340249");
+            File rooms = RMS();
 
-    }
+
+            if(Objects.requireNonNull(rooms.listFiles()).length == 0){
+                this.getServer().getLogger().info("[SoilGame]当前无游戏房间未加载任何游戏地图");
+            }else{
+
+                for(File room : Objects.requireNonNull(rooms.listFiles())) {
+
+                    this.getServer().loadLevel(room.getName().trim());
+                    this.getServer().getLogger().info("[SoilGame]成功加载游戏地图" + room.getName().trim());
+
+
+                    File level = new File(this.getDataFolder() + "/Rooms/" + room.getName().trim() + "/" + room.getName().trim());
+
+                    if (!level.isDirectory() || !level.exists()) {
+                        copy cy = new copy();
+                        String from = this.getServer().getDataPath() + "worlds/" + room.getName().trim();
+                        String to = this.getDataFolder() + "/Rooms/" + room.getName().trim() + "/" + room.getName().trim();
+                        cy.copyDir(from, to);
+                        this.getServer().getLogger().info("[SoilGame]地图" + room.getName().trim() + "存储成功");
+                    }
+
+                    this.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(this , room.getName().trim()), 20);//每秒检测
+                }
+                }
+
+
+                Entity.registerEntity("seller", seller.class);
+                this.getServer().getPluginManager().registerEvents(new eventListener(this), this);
+                this.getServer().getPluginManager().registerEvents(new goods(), this);
+                this.getServer().getLogger().info("加载成功  by:nitu QQ:1010340249");
+            }
+
 
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player pl = (Player) sender;
+        String en = pl.getLevel().getName().trim();
 
         if ("soilgame".equals(command.getName())) {
 
@@ -280,59 +300,65 @@ public class main extends PluginBase {
 
                         if ("quit".equals(args[0])) {
 
-                            Config list = GD();
-                            ArrayList<String> arr = (ArrayList<String>) list.get("等待玩家");
-                            ArrayList<String> ar = (ArrayList<String>) list.get("玩家");
-                            ArrayList<String> arr1 = (ArrayList<String>) GD().get("蓝方队员");
-                            ArrayList<String> arr2 = (ArrayList<String>) GD().get("红方队员");
+                            if (ROS().contains(en)) {
+
+                                Config list = GD(en);
+                                ArrayList<String> arr = (ArrayList<String>) list.get("等待玩家");
+                                ArrayList<String> ar = (ArrayList<String>) list.get("玩家");
+                                ArrayList<String> arr1 = (ArrayList<String>) GD(en).get("蓝方队员");
+                                ArrayList<String> arr2 = (ArrayList<String>) GD(en).get("红方队员");
 
 
-                            if (arr.contains(pl.getName())) {
+                                if (arr.contains(pl.getName())) {
 
-                                arr.remove(pl.getName());
-                                list.set("等待玩家", arr);
+                                    arr.remove(pl.getName());
+                                    list.set("等待玩家", arr);
 
-                                list.save();
+                                    list.save();
 
-                                Level lv = this.getServer().getLevelByName(GS().get("牌子的地图").toString());
-                                pl.teleport(lv.getSafeSpawn());
+                                    Level lv = this.getServer().getLevelByName(GS(en).get("牌子的地图").toString());
+                                    pl.teleport(lv.getSafeSpawn());
 
-                                pl.sendMessage("退出成功");
+                                    pl.sendMessage("退出成功");
 
-                                pl.getInventory().clearAll();
-
-                            }
-
-                            if (ar.contains(pl.getName())) {
-
-                                arr.remove(pl.getName());
-                                list.set("玩家", ar);
-
-
-                                if(arr1.contains(pl.getName())) {
-                                    arr1.remove(pl.getName());
-                                    list.set("蓝方队员" , arr1);
+                                    pl.getInventory().clearAll();
 
                                 }
 
+                                if (ar.contains(pl.getName())) {
 
-                                if(arr2.contains(pl.getName())) {
-                                    arr2.remove(pl.getName());
-                                    list.set("红方队员" , arr2);
+                                    ar.remove(pl.getName());
+                                    list.set("玩家", ar);
+
+
+                                    if (arr1.contains(pl.getName())) {
+                                        arr1.remove(pl.getName());
+                                        list.set("蓝方队员", arr1);
+
+                                    }
+
+
+                                    if (arr2.contains(pl.getName())) {
+                                        arr2.remove(pl.getName());
+                                        list.set("红方队员", arr2);
+                                    }
+
+
+                                    list.save();
+
+                                    Level lv = this.getServer().getLevelByName(GS(en).get("牌子的地图").toString());
+                                    pl.teleport(lv.getSafeSpawn());
+
+                                    pl.sendMessage("退出成功");
+
+                                    pl.getInventory().clearAll();
+
                                 }
 
-
-                                list.save();
-
-                                Level lv = this.getServer().getLevelByName(GS().get("牌子的地图").toString());
-                                pl.teleport(lv.getSafeSpawn());
-
-                                pl.sendMessage("退出成功");
-
-                                pl.getInventory().clearAll();
-
+                            } else {
+                                pl.sendMessage("你不能在非游戏地图以外的地图执行这个指令");
+                                return false;
                             }
-
                         }
 
 
@@ -354,7 +380,7 @@ public class main extends PluginBase {
                                         "\n设置刷新蓝队泥土二号点  /soilgame set blues2" +
                                         "\n设置刷新红队泥土一号点  /soilgame set reds1" +
                                         "\n设置刷新红队泥土二号点  /soilgame set reds2" +
-                                        "\n设置进入游戏的牌子  /soilgame set pz" +
+                                        "\n设置进入游戏的牌子  /soilgame set pz 游戏房间名字" +
                                         "\n退出游戏  /soilgame quit");
                             }
 
@@ -368,24 +394,40 @@ public class main extends PluginBase {
 
                                         Config cd = CD();
 
-                                        if (!Boolean.parseBoolean(cd.get("选择牌子").toString())) {
+                                        if (args.length > 2) {
 
-                                            cd.set("选择牌子", true);
-                                            cd.save();
+                                            if(ROS().contains(args[2].toString())) {
 
-                                            pl.sendMessage("快去点击一块牌子吧");
-                                            return true;
+                                                if (!Boolean.parseBoolean(cd.get("选择牌子").toString())) {
 
-                                        } else {
-                                            pl.sendMessage("请勿重复输入此选项你还没有选择牌子");
+                                                    cd.set("选择牌子", true);
+                                                    cd.set("游戏房间", args[2].toString());
+                                                    cd.save();
+
+                                                    pl.sendMessage("快去点击一块牌子吧");
+                                                    return true;
+
+                                                } else {
+                                                    pl.sendMessage("请勿重复输入此选项你还没有选择牌子");
+                                                    return false;
+                                                }
+
+                                            }else{
+                                                pl.sendMessage("不存在此房间");
+                                                return false;
+                                            }
+
+
+                                        }else {
+                                            pl.sendMessage("你还没有输入是哪个游戏房间");
                                             return false;
                                         }
                                     }//牌子
 
 
-                                    if (pl.getLevel().getName().trim().equals(levelName())) {
+                                    if (ROS().contains(en)) {
 
-                                        Config pz = GS();//游戏配置
+                                        Config pz = GS(en);//游戏配置
 
 
                                         if (args[1].equals("wait")) {
@@ -917,7 +959,7 @@ public class main extends PluginBase {
 
 
                                     } else {
-                                        pl.sendMessage("你不能在地图" + levelName() + "以外的地图执行这个指令");
+                                        pl.sendMessage("你不能在非游戏地图以外的地图执行这个指令");
                                         return false;
                                     }
 

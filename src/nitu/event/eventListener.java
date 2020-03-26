@@ -24,6 +24,7 @@ import nitu.main;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class eventListener implements Listener {
 
@@ -34,13 +35,13 @@ public eventListener(main s){
 }
 
 
-    public Config GS() {
-        File level = new File(se.getDataFolder() + "/GameSetting.yml");
+    public Config GS (String r) {
+        File level = new File(se.getDataFolder() + "/Rooms/" + r + "/GameSetting.yml");
         return new Config(level);
     }
 
-    public Config GD() {
-        File GameDynamicData = new File(se.getDataFolder() + "/GameDynamicData.yml");
+    public Config GD (String r) {
+        File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + r + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
     }
 
@@ -49,8 +50,19 @@ public eventListener(main s){
         return new Config(CmdDynamicData);
     }
 
-    public String levelName() {
-        return GS().get("游戏地图名字").toString();
+    public File RMS () {
+        return new File(se.getDataFolder() + "/Rooms");
+    }
+
+
+    public ArrayList<String> ROS(){
+        ArrayList<String> list = new ArrayList<>();
+
+        for(File room : Objects.requireNonNull(RMS().listFiles())) {
+            list.add(room.getName().trim());
+        }
+
+        return list;
     }
 
 
@@ -58,101 +70,118 @@ public eventListener(main s){
    public void Interact(PlayerInteractEvent ev){
 
        Player pl = ev.getPlayer();
+       String en = pl.getLevel().getName().trim();
        Block bl = ev.getBlock();
        Item it = ev.getItem();
-       HashMap<String , Double> pos = (HashMap<String, Double>) GS().get("等待区域");
-       HashMap<String , Double> pz = (HashMap<String, Double>) GS().get("牌子的位置");
+       Level lv = pl.getLevel();
+       Vector3 vec = new Vector3(bl.getX() , bl.getY() , bl.getZ());
+       BlockEntity bk = lv.getBlockEntity(vec);
+       String[] pzz = ROS().toArray(new String[0]);
 
-       if(pz.get("x") != null && pz.get("y") != null && pz.get("z") != null) {
+       if(bk instanceof BlockEntitySign) {
+           for (String pzn : pzz) {
 
-           if (pl.getLevel().getName().equals(GS().get("牌子的地图").toString()) && Double.parseDouble(pz.get("x").toString()) == bl.getX() && Double.parseDouble(pz.get("y").toString()) == bl.getY() && Double.parseDouble(pz.get("z").toString()) ==bl.getZ()) {
+               HashMap<String, Double> pz = (HashMap<String, Double>) GS(pzn).get("牌子的位置");
 
-               ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
+               if (pz.get("x") != null && pz.get("y") != null && pz.get("z") != null) {
 
-               if (!arr.contains(pl.getName())) {
+                   if (en.equals(GS(pzn).get("牌子的地图").toString()) && Double.parseDouble(pz.get("x").toString()) == bl.getX() && Double.parseDouble(pz.get("y").toString()) == bl.getY() && Double.parseDouble(pz.get("z").toString()) == bl.getZ()) {
 
-                   if (!Boolean.parseBoolean(GD().get("游戏是否开始").toString())) {
 
-                       if (arr.size() >= Integer.parseInt(GS().get("最大玩家数量").toString())) {
-                           pl.sendMessage("人数已满");
+                       ArrayList<String> arr = (ArrayList<String>) GD(pzn).get("等待玩家");
+                       HashMap<String, Double> pos = (HashMap<String, Double>) GS(pzn).get("等待区域");
+
+                       if (!arr.contains(pl.getName())) {
+
+                           if (!Boolean.parseBoolean(GD(pzn).get("游戏是否开始").toString())) {
+
+                               if (arr.size() >= Integer.parseInt(GS(pzn).get("最大玩家数量").toString())) {
+                                   pl.sendMessage("人数已满");
+                               } else {
+                                   Config gd = GD(pzn);
+
+                                   arr.add(pl.getName());
+                                   gd.set("等待玩家", arr);
+                                   gd.save();
+
+                                   Position po = new Position(Double.parseDouble(pos.get("x").toString()), Double.parseDouble(pos.get("y").toString()), Double.parseDouble(pos.get("z").toString()), se.getServer().getLevelByName(pzn));
+                                   pl.teleport(po);
+                                   pl.getInventory().clearAll();
+
+                                   pl.setMaxHealth(20);
+                                   pl.setHealth(20);
+                                   pl.setFoodEnabled(true);
+
+                                   arr.clear();
+
+                                   pl.sendMessage("已将您传送至等待区");
+                                   break;
+                               }
+                           } else {
+                               pl.sendMessage("游戏已经开始你无法进入");
+                           }
                        } else {
-                           Config gd = GD();
-
-                           arr.add(pl.getName());
-                           gd.set("等待玩家", arr);
-                           gd.save();
-
-                           Position po = new Position(Double.parseDouble(pos.get("x").toString()), Double.parseDouble(pos.get("y").toString()), Double.parseDouble(pos.get("z").toString()), se.getServer().getLevelByName(levelName()));
-                           pl.teleport(po);
-                           pl.getInventory().clearAll();
-
-                           pl.setMaxHealth(20);
-                           pl.setHealth(20);
-                           pl.setFoodEnabled(true);
-
-                           arr.clear();
-
-                           pl.sendMessage("已将您传送至等待区");
+                           pl.sendMessage("你已经在游戏房间了");
                        }
-                   } else {
-                       pl.sendMessage("游戏已经开始你无法进入");
                    }
-               }else{
-                   pl.sendMessage("你已经在游戏房间了");
                }
            }
        }
 
 
-       if(!Boolean.parseBoolean(GD().get("游戏是否开始").toString())){
+       if(ROS().contains(en)) {
 
-           Config list = GD();
-           ArrayList<String> arr = (ArrayList<String>) list.get("等待玩家");
+           if (!Boolean.parseBoolean(GD(en).get("游戏是否开始").toString())) {
 
-           if(arr.contains(pl.getName())) {
+               Config list = GD(en);
+               ArrayList<String> arr = (ArrayList<String>) list.get("等待玩家");
 
-               if (it.hasCompoundTag() && it.hasCustomName()) {
+               if (arr.contains(pl.getName())) {
 
-
-                   ArrayList<String> rteam = (ArrayList<String>) list.get("红方队员");
-                   ArrayList<String> bteam = (ArrayList<String>) list.get("蓝方队员");
-
-                   if (it.getNamedTag().getString("color").equals("red")) {
-                       rteam.add(pl.getName());
-                       pl.getInventory().clearAll();
-                       pl.sendTip("你选择了红队");
-                       list.set("红方队员", rteam);
-                       list.save();
-                   }
+                   if (it.hasCompoundTag() && it.hasCustomName()) {
 
 
-                   if (it.getNamedTag().getString("color").equals("blue")) {
-                       bteam.add(pl.getName());
-                       pl.getInventory().clearAll();
-                       pl.sendTip("你选择了蓝队");
-                       list.set("蓝方队员", bteam);
-                       list.save();
+                       ArrayList<String> rteam = (ArrayList<String>) list.get("红方队员");
+                       ArrayList<String> bteam = (ArrayList<String>) list.get("蓝方队员");
+
+                       if (it.getNamedTag().getString("color").equals("red")) {
+                           rteam.add(pl.getName());
+                           pl.getInventory().clearAll();
+                           pl.sendTip("你选择了红队");
+                           list.set("红方队员", rteam);
+                           list.save();
+                       }
+
+
+                       if (it.getNamedTag().getString("color").equals("blue")) {
+                           bteam.add(pl.getName());
+                           pl.getInventory().clearAll();
+                           pl.sendTip("你选择了蓝队");
+                           list.set("蓝方队员", bteam);
+                           list.save();
+                       }
+
                    }
 
                }
-
            }
        }
+
+
+
 
 
 
     if(Boolean.parseBoolean(CD().get("选择牌子").toString())) {
 
-        Level lv = pl.getLevel();
-        Vector3 vec = new Vector3(bl.getX() , bl.getY() , bl.getZ());
-        BlockEntity bk = lv.getBlockEntity(vec);
+        String fj = CD().get("游戏房间").toString();
 
         if(bk instanceof BlockEntitySign){
 
-            String[] text = {"§7Soil§5Game" , "§3点击加入" , "0" + "/" + GS().get("最大玩家数量").toString()};
+            String[] text = {"§7Soil§5Game" , "§e房间" + "§3" + fj , "§4点击加入" , "0" + "/" + GS(fj).get("最大玩家数量").toString()};
             HashMap<String , Double> list = new HashMap<>();
 
-            Config gs = GS();
+            Config gs = GS(fj);
             Config cd = CD();
 
             ((BlockEntitySign) bk).setText(text);
@@ -166,6 +195,7 @@ public eventListener(main s){
             gs.save();
 
             cd.set("选择牌子" , false);
+            cd.set("游戏房间" , null);
             cd.save();
 
             list.clear();
@@ -197,10 +227,10 @@ public eventListener(main s){
         String levelname = loc.getLevel().getName();
 
 
-        if (levelname.equals(levelName())) {
+        if (ROS().contains(levelname)) {
 
-            ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
-            ArrayList<String> arr1 = (ArrayList<String>) GD().get("玩家");
+            ArrayList<String> arr = (ArrayList<String>) GD(levelname).get("等待玩家");
+            ArrayList<String> arr1 = (ArrayList<String>) GD(levelname).get("玩家");
 
             if (arr.contains(pl.getName()) || arr1.contains(pl.getName()) || pl.isOp()){
                 ev.setCancelled(false);
@@ -221,9 +251,9 @@ public eventListener(main s){
     Player pl = ev.getPlayer();
     String levelname = pl.getLevel().getName();
 
-    if(levelname.equals(levelName())){
+    if(ROS().contains(levelname)){
 
-        ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
+        ArrayList<String> arr = (ArrayList<String>) GD(levelname).get("等待玩家");
 
         if(arr.contains(pl.getName())){
             ev.setCancelled(true);
@@ -241,73 +271,97 @@ public eventListener(main s){
     @EventHandler
     public void quit(PlayerQuitEvent ev){
 
-        ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
-        ArrayList<String> arr1 = (ArrayList<String>) GD().get("玩家");
         String name = ev.getPlayer().getName();
+        File rooms = RMS();
 
-        if(arr.contains(name)){
 
-            Config gd = GD();
+        if(Objects.requireNonNull(rooms.listFiles()).length != 0) {
 
-            arr.remove(name);
-            gd.set("等待玩家" , arr);
-            gd.save();
 
+            for(File room : Objects.requireNonNull(rooms.listFiles())) {
+
+                ArrayList<String> arr = (ArrayList<String>) GD(room.getName().trim()).get("等待玩家");
+                ArrayList<String> arr1 = (ArrayList<String>) GD(room.getName().trim()).get("玩家");
+
+
+                if (arr.contains(name)) {
+
+                    Config gd = GD(room.getName().trim());
+
+                    arr.remove(name);
+                    gd.set("等待玩家", arr);
+                    gd.save();
+                    break;
+                }
+
+                if (arr1.contains(name)) {
+
+                    Config gd = GD(room.getName().trim());
+
+                    arr1.remove(name);
+                    gd.set("玩家", arr1);
+                    gd.save();
+                    break;
+                }
+            }
         }
-
-        if(arr1.contains(name)){
-
-            Config gd = GD();
-
-            arr1.remove(name);
-            gd.set("玩家" , arr1);
-            gd.save();
-
-        }
-
-
     }
 
 
     @EventHandler
-    public void join(PlayerJoinEvent ev){
+    public void join(PlayerJoinEvent ev) {
 
-    Player pl = ev.getPlayer();
-    String lv = ev.getPlayer().getLevel().getName();
-    String name = ev.getPlayer().getName();
-    ArrayList<String> arr2 = (ArrayList<String>) GD().get("红方队员");
-    ArrayList<String> arr3 = (ArrayList<String>) GD().get("蓝方队员");
-    ArrayList<String> ar = (ArrayList<String>) GD().get("玩家");
-    Config gd = GD();
+        Player pl = ev.getPlayer();
+        String lv = ev.getPlayer().getLevel().getName();
+        String name = ev.getPlayer().getName();
 
 
-    if(Boolean.parseBoolean(GD().get("游戏是否开始").toString())){
-
-        if(levelName().equals(lv)){
-
-            if(arr2.contains(name) || arr3.contains(name)){
-
-                ar.add(name);
-                gd.set("玩家" , ar);
-                gd.save();
-
-                pl.sendMessage("断线重连成功!");
-
-            }
-
-        }
+        File rooms = RMS();
 
 
-    }else{
+        if (Objects.requireNonNull(rooms.listFiles()).length != 0) {
 
-        if(levelName().equals(lv)){
 
-            pl.setSpawn(se.getServer().getLevelByName(GS().get("牌子的地图").toString()).getSafeSpawn());
-            pl.kill();
-            pl.sendMessage("你的位置异常已送你返回大厅");
-        }
+            for (File room : Objects.requireNonNull(rooms.listFiles())) {
 
-    }
+
+                ArrayList<String> arr2 = (ArrayList<String>) GD(room.getName().trim()).get("红方队员");
+                ArrayList<String> arr3 = (ArrayList<String>) GD(room.getName().trim()).get("蓝方队员");
+                ArrayList<String> ar = (ArrayList<String>) GD(room.getName().trim()).get("玩家");
+                Config gd = GD(room.getName().trim());
+
+
+                if (Boolean.parseBoolean(gd.get("游戏是否开始").toString())) {
+
+                    if (arr2.contains(name) || arr3.contains(name)) {
+
+                        ar.add(name);
+                        gd.set("玩家", ar);
+                        gd.save();
+
+                        pl.sendMessage("断线重连成功!");
+                        break;
+
+
+                    }
+                }
+                }
+                }
+
+
+
+                    if (ROS().contains(lv)) {
+                        if (!Boolean.parseBoolean(GD(lv).get("游戏是否开始").toString())) {
+
+                            pl.setSpawn(se.getServer().getLevelByName(GD(lv).get("牌子的地图").toString()).getSafeSpawn());
+                            pl.kill();
+                            pl.sendMessage("你的位置异常已送你返回大厅");
+                        }
+                    }
+
+
+
+
 
 
     }
@@ -330,13 +384,18 @@ public eventListener(main s){
     public void damage(EntityDamageByEntityEvent ev) {
 
 
-            Player pl = (Player) ev.getDamager();
-            Entity shopper = ev.getEntity();
-            String name = pl.getName();
-            ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
-            ArrayList<String> ar = (ArrayList<String>) GD().get("玩家");
-            ArrayList<String> arr2 = (ArrayList<String>) GD().get("蓝方队员");
-            ArrayList<String> arr3 = (ArrayList<String>) GD().get("红方队员");
+        Player pl = (Player) ev.getDamager();
+        Entity shopper = ev.getEntity();
+        String name = pl.getName();
+        String lv = pl.getLevel().getName();
+
+        if (ROS().contains(lv)) {
+
+            ArrayList<String> arr = (ArrayList<String>) GD(lv).get("等待玩家");
+            ArrayList<String> ar = (ArrayList<String>) GD(lv).get("玩家");
+            ArrayList<String> arr2 = (ArrayList<String>) GD(lv).get("蓝方队员");
+            ArrayList<String> arr3 = (ArrayList<String>) GD(lv).get("红方队员");
+
 
             if (arr.contains(name)) {
                 ev.setCancelled(true);
@@ -351,54 +410,61 @@ public eventListener(main s){
                 }
             }
 
-            if(arr2.contains(pl) && arr2.contains(shopper)){
-            ev.setCancelled(true);
+            if (arr2.contains(pl) && arr2.contains(shopper)) {
+                ev.setCancelled(true);
             }
 
-           if(arr3.contains(pl) && arr3.contains(shopper)){
-            ev.setCancelled(true);
-           }
+            if (arr3.contains(pl) && arr3.contains(shopper)) {
+                ev.setCancelled(true);
+            }
 
         }
-
+    }
 
 
 
         @EventHandler
-        public void death(PlayerDeathEvent ev){
+        public void death(PlayerDeathEvent ev) {
 
             Player pl = ev.getEntity();
             String name = pl.getName();
-            ArrayList<String> arr = (ArrayList<String>) GD().get("等待玩家");
-            HashMap<String , Double> pos = (HashMap<String, Double>) GS().get("等待区域");
+            String lv = pl.getLevel().getName();
+
+            if (ROS().contains(lv)) {
+                ArrayList<String> arr = (ArrayList<String>) GD(lv).get("等待玩家");
+                HashMap<String, Double> pos = (HashMap<String, Double>) GS(lv).get("等待区域");
 
 
-            if(arr.contains(name)){
-                Position po = new Position(Double.parseDouble(pos.get("x").toString()), Double.parseDouble(pos.get("y").toString()), Double.parseDouble(pos.get("z").toString()), se.getServer().getLevelByName(levelName()));
-                pl.teleport(po);
+                if (arr.contains(name)) {
+                    Position po = new Position(Double.parseDouble(pos.get("x").toString()), Double.parseDouble(pos.get("y").toString()), Double.parseDouble(pos.get("z").toString()), se.getServer().getLevelByName(lv));
+                    pl.teleport(po);
+                }
             }
-    }
-
+        }
 
 
     @EventHandler
-    public void nametag(PlayerMoveEvent ev){
+    public void nametag(PlayerMoveEvent ev) {
 
-        ArrayList<String> arr2 = (ArrayList<String>) GD().get("蓝方队员");
-        ArrayList<String> arr3 = (ArrayList<String>) GD().get("红方队员");
+
         Player pl = ev.getPlayer();
         String na = pl.getName();
+        String lv = pl.getLevel().getName();
 
-        if(arr2.contains(na)){
-            pl.setNameTag("§3" + na);
-        }
+        if (ROS().contains(lv)) {
+            ArrayList<String> arr2 = (ArrayList<String>) GD(lv).get("蓝方队员");
+            ArrayList<String> arr3 = (ArrayList<String>) GD(lv).get("红方队员");
 
-        if(arr3.contains(na)){
-            pl.setNameTag("§4" + na);
+            if (arr2.contains(na)) {
+                pl.setNameTag("§3" + na);
+            }
+
+            if (arr3.contains(na)) {
+                pl.setNameTag("§4" + na);
+            }
+
         }
 
     }
-
-
 
 }

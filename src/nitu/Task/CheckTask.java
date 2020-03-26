@@ -13,19 +13,21 @@ import java.util.HashMap;
 public class CheckTask extends Task {
 
     public main se;
+    public String RoomName;
 
-    public CheckTask(main s){
+    public CheckTask(main s , String r){
         se = s;
+        RoomName = r;
     }
 
 
     public Config GD() {
-        File GameDynamicData = new File(se.getDataFolder() + "/GameDynamicData.yml");
+        File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
     }
 
     public Config GS() {
-        File level = new File(se.getDataFolder() + "/GameSetting.yml");
+        File level = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameSetting.yml");
         return new Config(level);
     }
 
@@ -40,12 +42,12 @@ public class CheckTask extends Task {
 
     public String[] name(){
         ArrayList<String> list = (ArrayList<String>) GD().get("等待玩家");
-        return new String[]{"§7Soil§5Game" , "§3点击加入" , String.valueOf(list.size()) + "/" + GS().get("最大玩家数量").toString()};
+        return new String[]{"§7Soil§5Game" , "§e房间" + "§3" + RoomName , "§4点击加入" , String.valueOf(list.size()) + "/" + GS().get("最大玩家数量").toString()};
     }
 
     public String[] name1(){
         ArrayList<String> list = (ArrayList<String>) GD().get("等待玩家");
-        return new String[]{"§7Soil§5Game" , "§3点击加入" , "等待中"};
+        return new String[]{"§7Soil§5Game" , "§e房间" + "§3" + RoomName , "§4点击加入" , "等待中"};
     }
 
 
@@ -60,7 +62,7 @@ public class CheckTask extends Task {
 
          bes().setText(name1());
 
-         se.getServer().getScheduler().scheduleRepeatingTask(new WaitTask(se , Integer.parseInt(GS().get("等待时间").toString())) , 20);
+         se.getServer().getScheduler().scheduleRepeatingTask(new WaitTask(se , Integer.parseInt(GS().get("等待时间").toString()) , RoomName) , 20);
          this.getHandler().cancel();
      }
 
