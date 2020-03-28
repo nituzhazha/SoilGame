@@ -46,6 +46,7 @@ public class GameTask extends Task {
 
 
 
+
     public void pl(int t) {
         String[] pls = ((ArrayList<String>) GD().get("玩家")).toArray(new String[0]);
         ArrayList<String> arr1 = (ArrayList<String>) GD().get("蓝方队员");
@@ -98,9 +99,11 @@ public class GameTask extends Task {
             se.getServer().getPlayer(pn).setSpawn(lv.getSafeSpawn());
             se.getServer().getPlayer(pn).getInventory().clearAll();
             se.getServer().getPlayer(pn).sendMessage("游戏结束返回大厅");
+            se.getServer().getPlayer(pn).setNameTag("§f" + se.getServer().getPlayer(pn).getNameTag());
 
         }
     }
+
 
 
     public void change(){
@@ -811,6 +814,7 @@ public class GameTask extends Task {
             }
 
             tp();
+            se.getServer().getScheduler().scheduleAsyncTask(se , new bag(se , RoomName));
         }
 
         if (time == 0) {
@@ -834,6 +838,7 @@ public class GameTask extends Task {
                 remove(i1 , pl);
                 remove(i2 , pl);
             }
+
 
             se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName) , 20);
 

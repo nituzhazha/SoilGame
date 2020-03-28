@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
@@ -54,6 +55,7 @@ public class main extends PluginBase {
 
                     File level = new File(this.getDataFolder() + "/Rooms/" + rom + "/GameSetting.yml");
                     File GameDynamicData = new File(this.getDataFolder() + "/Rooms/" + rom +  "/GameDynamicData.yml");
+                    File PlayerInventoryData = new File(this.getDataFolder() + "/Rooms/" + rom +  "/PlayerInventoryData.yml");
 
 
                     if (!level.exists()) {
@@ -208,6 +210,14 @@ public class main extends PluginBase {
                         list.clear();
                         this.getServer().getLogger().info("[SoilGame]房间" + rom + "的游戏动态文件初始化成功！");
                     }
+
+
+                    if (!PlayerInventoryData.exists()) {
+                        new Config(PlayerInventoryData);
+                        this.getServer().getLogger().info("[SoilGame]房间" + rom + "的玩家背包储存文件初始化成功！");
+                    }
+
+
                 }
             }
         }
@@ -220,6 +230,11 @@ public class main extends PluginBase {
         public Config GD (String r) {
             File GameDynamicData = new File(this.getDataFolder() + "/Rooms/" + r + "/GameDynamicData.yml");
             return new Config(GameDynamicData);
+        }
+
+        public Config IV (String r) {
+          File PlayerInventoryData = new File(this.getDataFolder() + "/Rooms/" + r + "/PlayerInventoryData.yml");
+          return new Config(PlayerInventoryData);
         }
 
         public Config CD () {
@@ -323,6 +338,35 @@ public class main extends PluginBase {
 
                                     pl.getInventory().clearAll();
 
+
+                                    if(IV(en).get(pl.getName()) != null) {
+                                        Config llv = IV(en);
+                                        HashMap<Integer, HashMap<String, Object>> all = (HashMap<Integer, HashMap<String, Object>>) llv.get(pl.getName());
+
+                                        for (int i = 0; i < 36; i++) {
+
+                                            HashMap<String, Object> single = all.get(i);
+
+                                            Item item;
+
+                                            if(Integer.parseInt(single.get("id").toString())  != 0) {
+                                                item = Item.get(Integer.parseInt(single.get("id").toString()), Integer.parseInt(single.get("damage").toString()), Integer.parseInt(single.get("count").toString()));
+
+                                                if(!single.get("nbt").toString().equals("无")){
+                                                    item = Item.get(Integer.parseInt(single.get("id").toString()), Integer.parseInt(single.get("damage").toString()), Integer.parseInt(single.get("count").toString()), single.get("nbt").toString().getBytes());
+                                                }
+
+                                                pl.getInventory().addItem(item);
+                                            }
+
+                                            single.clear();
+                                        }
+
+                                        llv.remove(pl.getName());
+                                        llv.save();
+                                        pl.sendMessage("你的背包已经归还");
+                                    }
+
                                 }
 
                                 if (ar.contains(pl.getName())) {
@@ -352,6 +396,16 @@ public class main extends PluginBase {
                                     pl.sendMessage("退出成功");
 
                                     pl.getInventory().clearAll();
+
+
+                                    if(IV(en).getKeys().contains(pl.getName())){
+                                        HashMap<Integer , Item> items = (HashMap<Integer, Item>) IV(en).get(pl.getName());
+                                        pl.getInventory().setContents(items);
+                                        Config iv = IV(en);
+                                        iv.remove(pl.getName());
+                                        iv.save();
+                                        pl.sendMessage("你的背包已经归还");
+                                    }
 
                                 }
 

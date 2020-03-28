@@ -18,6 +18,8 @@ import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Config;
 import nitu.Entity.seller;
+import nitu.Task.CheckBag;
+import nitu.Task.bag;
 import nitu.gui.shop;
 import nitu.main;
 
@@ -43,6 +45,11 @@ public eventListener(main s){
     public Config GD (String r) {
         File GameDynamicData = new File(se.getDataFolder() + "/Rooms/" + r + "/GameDynamicData.yml");
         return new Config(GameDynamicData);
+    }
+
+    public Config IV (String r) {
+        File PlayerInventoryData = new File(se.getDataFolder() + "/Rooms/" + r + "/PlayerInventoryData.yml");
+        return new Config(PlayerInventoryData);
     }
 
     public Config CD() {
@@ -100,9 +107,33 @@ public eventListener(main s){
                                } else {
                                    Config gd = GD(pzn);
 
+                                   Config iv = IV(pzn);
+
+                                   HashMap<Integer , HashMap<String , Object>> all = new HashMap<>();
+
+
+                                   for(int i = 0 ; i < 36 ; i++) {
+
+                                       HashMap<String , Object> single = new HashMap<>();
+                                       int id = pl.getInventory().getItem(i).getId();
+                                       int damage = pl.getInventory().getItem(i).getDamage();
+                                       int count = pl.getInventory().getItem(i).getCount();
+                                       String nbt = pl.getInventory().getItem(i).hasCompoundTag() ? new String(pl.getInventory().getItem(i).getCompoundTag()) : "无";
+                                       single.put("id" , id);
+                                       single.put("damage" , damage);
+                                       single.put("count" , count);
+                                       single.put("nbt" , nbt);
+                                       all.put(i , single);
+                                   }
+
+                                   iv.set(pl.getName(), all);
+                                   iv.save();
+
                                    arr.add(pl.getName());
                                    gd.set("等待玩家", arr);
                                    gd.save();
+
+
 
                                    Position po = new Position(Double.parseDouble(pos.get("x").toString()), Double.parseDouble(pos.get("y").toString()), Double.parseDouble(pos.get("z").toString()), se.getServer().getLevelByName(pzn));
                                    pl.teleport(po);
@@ -352,17 +383,14 @@ public eventListener(main s){
 
                     if (ROS().contains(lv)) {
                         if (!Boolean.parseBoolean(GD(lv).get("游戏是否开始").toString())) {
-
-                            pl.setSpawn(se.getServer().getLevelByName(GD(lv).get("牌子的地图").toString()).getSafeSpawn());
-                            pl.kill();
                             pl.sendMessage("你的位置异常已送你返回大厅");
+                            pl.getInventory().clearAll();
+                            pl.setSpawn(se.getServer().getLevelByName(GS(lv).get("牌子的地图").toString()).getSafeSpawn());
+                            pl.kill();
                         }
                     }
 
-
-
-
-
+                   se.getServer().getScheduler().scheduleAsyncTask(se , new CheckBag(se , rooms , pl));
 
     }
 
@@ -388,6 +416,7 @@ public eventListener(main s){
         Entity shopper = ev.getEntity();
         String name = pl.getName();
         String lv = pl.getLevel().getName();
+
 
         if (ROS().contains(lv)) {
 
