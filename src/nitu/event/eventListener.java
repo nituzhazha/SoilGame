@@ -410,8 +410,9 @@ public eventListener(main s){
 
     @EventHandler
     public void damage(EntityDamageByEntityEvent ev) {
-
-
+        if (!(ev.getDamager() instanceof Player)) {
+            return;
+        }
         Player pl = (Player) ev.getDamager();
         Entity shopper = ev.getEntity();
         String name = pl.getName();
