@@ -3,7 +3,7 @@ package nitu.item;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.EnchantmentKnockback;
 
-public class dbz extends EnchantmentKnockback{
+public class dbz extends EnchantmentKnockback {
 
     public Item item() {
         Item item = new Item(369, 0, 1);

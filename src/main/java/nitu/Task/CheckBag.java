@@ -16,19 +16,19 @@ public class CheckBag extends AsyncTask {
     public File Rooms;
     public Player player;
 
-    public CheckBag(main s , File r , Player n){
-    Rooms = r;
-    se = s;
-    player = n;
+    public CheckBag(main s, File r, Player n) {
+        Rooms = r;
+        se = s;
+        player = n;
     }
 
 
-    public Config IV (String r) {
+    public Config IV(String r) {
         File PlayerInventoryData = new File(se.getDataFolder() + "/Rooms/" + r + "/PlayerInventoryData.yml");
         return new Config(PlayerInventoryData);
     }
 
-    public void CheckBag(){
+    public void CheckBag() {
 
         if (Objects.requireNonNull(Rooms.listFiles()).length != 0) {
 

@@ -2,16 +2,15 @@ package nitu.copy;
 
 import java.io.*;
 
-public class copy{
+public class copy {
 
     //csdn借用加本人修改
-
     public void copyDir(String from, String to) {
 
         File src = new File(from);
         File dest = new File(to);
 
-        File [] fileArray = src.listFiles();
+        File[] fileArray = src.listFiles();
         //判读那目标文件夹是否存在
         if (!dest.exists()) {
             dest.mkdirs();
@@ -32,16 +31,15 @@ public class copy{
     }
 
     public void copy(File file, File destFile) {
-
         //选择流，分别为输入、输出流
         InputStream is = null;
         OutputStream os = null;
         try {
             is = new FileInputStream(file);
             os = new FileOutputStream(destFile);
-            byte [] dirsDatas = new byte[1024*100];//缓冲容器
+            byte[] dirsDatas = new byte[1024 * 100];//缓冲容器
             int len = -1;
-            while((len = is.read(dirsDatas)) != -1) {
+            while ((len = is.read(dirsDatas)) != -1) {
                 os.write(dirsDatas, 0, len);
             }
             os.flush();
@@ -65,7 +63,6 @@ public class copy{
                 e.printStackTrace();
             }
         }
-
     }
 
 }

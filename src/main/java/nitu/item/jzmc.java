@@ -3,7 +3,7 @@ package nitu.item;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.EnchantmentSilkTouch;
 
-public class jzmc extends EnchantmentSilkTouch{
+public class jzmc extends EnchantmentSilkTouch {
 
     public Item item() {
         Item item = new Item(269, 0, 1);

@@ -1,6 +1,5 @@
 package nitu.Task;
 
-import cn.nukkit.math.Vector3;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.Config;
 import nitu.main;
@@ -13,9 +12,9 @@ public class blue extends AsyncTask {
     public main se;
     public String RoomName;
 
-    public blue(main s , String r){
-    RoomName = r;
-    se = s;
+    public blue(main s, String r) {
+        RoomName = r;
+        se = s;
     }
 
     public Config GD() {
@@ -27,7 +26,6 @@ public class blue extends AsyncTask {
         File level = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/GameSetting.yml");
         return new Config(level);
     }
-
 
 
     public void bluenum() {
@@ -106,28 +104,28 @@ public class blue extends AsyncTask {
                     for (Double y = smy; y <= biy; y++) {
 
 
-                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 2) {
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 2) {
 
-                                gd.set("蓝方分数", num + 2);
-                                gd.save();
-
-                            }
-
-                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 3) {
-
-                                gd.set("蓝方分数", num + 1);
-                                gd.save();
-
-                            }
-
-                            if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 82) {
-
-                                gd.set("蓝方分数", num + 3);
-                                gd.save();
-
-                            }
+                            gd.set("蓝方分数", num + 2);
+                            gd.save();
 
                         }
+
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 3) {
+
+                            gd.set("蓝方分数", num + 1);
+                            gd.save();
+
+                        }
+
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 82) {
+
+                            gd.set("蓝方分数", num + 3);
+                            gd.save();
+
+                        }
+
+                    }
                 }
             }
         }

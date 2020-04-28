@@ -26,7 +26,7 @@ public class GameTask extends Task {
     public long i2;
     public String RoomName;
 
-    public GameTask(main s, int t , long i , long ii , String r) {
+    public GameTask(main s, int t, long i, long ii, String r) {
         se = s;
         time = t;
         i1 = i;
@@ -45,8 +45,6 @@ public class GameTask extends Task {
     }
 
 
-
-
     public void pl(int t) {
         String[] pls = ((ArrayList<String>) GD().get("玩家")).toArray(new String[0]);
         ArrayList<String> arr1 = (ArrayList<String>) GD().get("蓝方队员");
@@ -54,11 +52,11 @@ public class GameTask extends Task {
 
         for (String pn : pls) {
 
-            if(arr1.contains(pn)) {
+            if (arr1.contains(pn)) {
                 se.getServer().getPlayer(pn).sendTip("§c你所在的队伍:" + "§3蓝队" + "  " + "§2倒计时" + "§e" + String.valueOf(t));
             }
 
-            if(arr2.contains(pn)) {
+            if (arr2.contains(pn)) {
                 se.getServer().getPlayer(pn).sendTip("§c你所在的队伍:" + "§4红队" + "  " + "§2倒计时" + "§e" + String.valueOf(t));
             }
 
@@ -71,15 +69,15 @@ public class GameTask extends Task {
 
         for (String pn : pls) {
 
-            if(t == 1) {
+            if (t == 1) {
                 se.getServer().getPlayer(pn).sendMessage("§3蓝队获胜");
             }
 
-            if(t == 2) {
+            if (t == 2) {
                 se.getServer().getPlayer(pn).sendMessage("§3红队获胜");
             }
 
-            if(t == 3) {
+            if (t == 3) {
                 se.getServer().getPlayer(pn).sendMessage("§3本场平局");
             }
 
@@ -88,7 +86,7 @@ public class GameTask extends Task {
 
     }
 
-    public void tp(){
+    public void tp() {
 
         String[] pls = ((ArrayList<String>) GD().get("玩家")).toArray(new String[0]);
 
@@ -105,33 +103,30 @@ public class GameTask extends Task {
     }
 
 
-
-    public void change(){
+    public void change() {
 
         se.getServer().unloadLevel(se.getServer().getLevelByName(RoomName));
         File level = new File(se.getServer().getDataPath() + "worlds/" + RoomName);
         delall(level);
-            copy cy = new copy();
-            String to = se.getServer().getDataPath() + "worlds/" + RoomName;
-            String from = se.getDataFolder() + "/Rooms/" + RoomName + "/" + RoomName;
-            cy.copyDir(from, to);
+        copy cy = new copy();
+        String to = se.getServer().getDataPath() + "worlds/" + RoomName;
+        String from = se.getDataFolder() + "/Rooms/" + RoomName + "/" + RoomName;
+        cy.copyDir(from, to);
     }
 
 
-    public void delall(File path){
+    public void delall(File path) {
 
-        if(path.isFile()){
+        if (path.isFile()) {
             path.delete();
             return;
-        }else{
+        } else {
             File[] files = path.listFiles();
-            for(File file : files){
+            for (File file : files) {
                 delall(file);
             }
         }
     }
-
-
 
 
     public void block() {
@@ -200,10 +195,9 @@ public class GameTask extends Task {
         }
 
 
-
-        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue()+1);
-        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue()+1);
-        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue()+1);
+        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue() + 1);
+        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue() + 1);
+        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue() + 1);
 
         HashMap<Integer, Block> blocks = new HashMap<>();
         blocks.put(0, Block.get(2));
@@ -287,12 +281,11 @@ public class GameTask extends Task {
         }
 
 
-
         Block block = Block.get(3);
 
-        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue()+1);
-        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue()+1);
-        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue()+1);
+        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue() + 1);
+        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue() + 1);
+        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue() + 1);
 
         Vector3 vec3 = new Vector3(ra1, ra2, ra3);
 
@@ -368,12 +361,11 @@ public class GameTask extends Task {
         }
 
 
-
         Block block = Block.get(3);
 
-        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue()+1);
-        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue()+1);
-        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue()+1);
+        int ra1 = ThreadLocalRandom.current().nextInt(smx.intValue(), bix.intValue() + 1);
+        int ra2 = ThreadLocalRandom.current().nextInt(smy.intValue(), biy.intValue() + 1);
+        int ra3 = ThreadLocalRandom.current().nextInt(smz.intValue(), biz.intValue() + 1);
 
         Vector3 vec3 = new Vector3(ra1, ra2, ra3);
 
@@ -383,7 +375,7 @@ public class GameTask extends Task {
     }
 
 
-    public void blueparticle(){
+    public void blueparticle() {
         HashMap<String, HashMap<String, Double>> list = (HashMap<String, HashMap<String, Double>>) GS().get("蓝队堆土点");
         HashMap<String, Double> f = list.get("first");
         HashMap<String, Double> s = list.get("second");
@@ -447,7 +439,7 @@ public class GameTask extends Task {
             biz = z2;
         }
 
-        if(smx != null && smz != null && smy != null) {
+        if (smx != null && smz != null && smy != null) {
 
             for (double x = smx; x <= bix; x++) {
 
@@ -470,9 +462,9 @@ public class GameTask extends Task {
             }
         }
 
-        }
+    }
 
-    public void blueparticle2(){
+    public void blueparticle2() {
         HashMap<String, HashMap<String, Double>> list = (HashMap<String, HashMap<String, Double>>) GS().get("蓝队堆土点");
         HashMap<String, Double> f = list.get("first");
         HashMap<String, Double> s = list.get("second");
@@ -536,7 +528,7 @@ public class GameTask extends Task {
             biz = z2;
         }
 
-        if(smx != null && smz != null && smy != null) {
+        if (smx != null && smz != null && smy != null) {
 
             for (double x = smx; x <= bix; x++) {
 
@@ -552,8 +544,7 @@ public class GameTask extends Task {
     }
 
 
-
-    public void redparticle(){
+    public void redparticle() {
         HashMap<String, HashMap<String, Double>> list = (HashMap<String, HashMap<String, Double>>) GS().get("红队堆土点");
         HashMap<String, Double> f = list.get("first");
         HashMap<String, Double> s = list.get("second");
@@ -618,7 +609,7 @@ public class GameTask extends Task {
             biz = z2;
         }
 
-        if(smx != null && smz != null && smy != null) {
+        if (smx != null && smz != null && smy != null) {
 
             for (double x = smx; x <= bix; x++) {
 
@@ -643,7 +634,7 @@ public class GameTask extends Task {
 
     }
 
-    public void redparticle2(){
+    public void redparticle2() {
         HashMap<String, HashMap<String, Double>> list = (HashMap<String, HashMap<String, Double>>) GS().get("红队堆土点");
         HashMap<String, Double> f = list.get("first");
         HashMap<String, Double> s = list.get("second");
@@ -708,7 +699,7 @@ public class GameTask extends Task {
             biz = z2;
         }
 
-        if(smx != null && smz != null && smy != null) {
+        if (smx != null && smz != null && smy != null) {
 
             for (double x = smx; x <= bix; x++) {
 
@@ -724,13 +715,11 @@ public class GameTask extends Task {
     }
 
 
-    public void remove(long id , Player pl){
+    public void remove(long id, Player pl) {
         RemoveEntityPacket pk = new RemoveEntityPacket();
         pk.eid = id;
         pl.dataPacket(pk);
     }
-
-
 
 
     @Override
@@ -768,7 +757,7 @@ public class GameTask extends Task {
                 remove(i2, pl);
             }
 
-            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName), 20);
+            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se, RoomName), 20);
 
             change();
             se.getServer().loadLevel(RoomName);
@@ -780,74 +769,69 @@ public class GameTask extends Task {
         }//无人重开
 
 
-
-
-
-
-        if(time > 1) {
+        if (time > 1) {
             pl(time);
         }
-
 
 
         time--;
 
 
-        if(time == 2){
-            se.getServer().getScheduler().scheduleAsyncTask(se , new blue(se , RoomName));
-            se.getServer().getScheduler().scheduleAsyncTask(se , new red(se , RoomName));
+        if (time == 2) {
+            se.getServer().getScheduler().scheduleAsyncTask(se, new blue(se, RoomName));
+            se.getServer().getScheduler().scheduleAsyncTask(se, new red(se, RoomName));
         }
 
 
-        if(time == 1){
+        if (time == 1) {
 
-            if(Integer.parseInt(GD().get("蓝方分数").toString()) > Integer.parseInt(GD().get("红方分数").toString())){
+            if (Integer.parseInt(GD().get("蓝方分数").toString()) > Integer.parseInt(GD().get("红方分数").toString())) {
                 pll(1);
             }
 
-            if(Integer.parseInt(GD().get("蓝方分数").toString()) < Integer.parseInt(GD().get("红方分数").toString())){
+            if (Integer.parseInt(GD().get("蓝方分数").toString()) < Integer.parseInt(GD().get("红方分数").toString())) {
                 pll(2);
             }
 
-            if(Integer.parseInt(GD().get("蓝方分数").toString()) == Integer.parseInt(GD().get("红方分数").toString())){
+            if (Integer.parseInt(GD().get("蓝方分数").toString()) == Integer.parseInt(GD().get("红方分数").toString())) {
                 pll(3);
             }
 
             tp();
-            se.getServer().getScheduler().scheduleAsyncTask(se , new bag(se , RoomName));
+            se.getServer().getScheduler().scheduleAsyncTask(se, new bag(se, RoomName));
         }
 
         if (time == 0) {
 
             Config gd = GD();
-            ArrayList<String> arr1 = (ArrayList<String>)GD().get("玩家");
-            ArrayList<String> arr2 = (ArrayList<String>)GD().get("蓝方队员");
-            ArrayList<String> arr3 = (ArrayList<String>)GD().get("红方队员");
+            ArrayList<String> arr1 = (ArrayList<String>) GD().get("玩家");
+            ArrayList<String> arr2 = (ArrayList<String>) GD().get("蓝方队员");
+            ArrayList<String> arr3 = (ArrayList<String>) GD().get("红方队员");
             arr1.removeAll(arr1);
             arr2.removeAll(arr2);
             arr3.removeAll(arr3);
-            gd.set("玩家" , arr1);
-            gd.set("游戏是否开始" , false);
-            gd.set("蓝方队员" , arr2);
-            gd.set("红方队员" , arr3);
-            gd.set("蓝方分数" , 0);
-            gd.set("红方分数" , 0);
+            gd.set("玩家", arr1);
+            gd.set("游戏是否开始", false);
+            gd.set("蓝方队员", arr2);
+            gd.set("红方队员", arr3);
+            gd.set("蓝方分数", 0);
+            gd.set("红方分数", 0);
             gd.save();
 
-            for(Player pl : se.getServer().getOnlinePlayers().values().toArray(new Player[0])){
-                remove(i1 , pl);
-                remove(i2 , pl);
+            for (Player pl : se.getServer().getOnlinePlayers().values().toArray(new Player[0])) {
+                remove(i1, pl);
+                remove(i2, pl);
             }
 
 
-            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se , RoomName) , 20);
+            se.getServer().getScheduler().scheduleRepeatingTask(new CheckTask(se, RoomName), 20);
 
             change();
             se.getServer().loadLevel(RoomName);
-            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE , false);
-            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS , true);
-            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_TILE_DROPS , true);
-            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.PVP , true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_ENTITY_DROPS, true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.DO_TILE_DROPS, true);
+            se.getServer().getLevelByName(RoomName).gameRules.setGameRule(GameRule.PVP, true);
             this.getHandler().cancel();
         }
 

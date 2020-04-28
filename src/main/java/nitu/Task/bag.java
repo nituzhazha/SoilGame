@@ -14,9 +14,9 @@ public class bag extends AsyncTask {
     public main se;
     public String RoomName;
 
-    public bag(main s , String r){
-    RoomName = r;
-    se = s;
+    public bag(main s, String r) {
+        RoomName = r;
+        se = s;
     }
 
     public Config GD() {
@@ -25,12 +25,12 @@ public class bag extends AsyncTask {
     }
 
 
-    public Config IV () {
+    public Config IV() {
         File PlayerInventoryData = new File(se.getDataFolder() + "/Rooms/" + RoomName + "/PlayerInventoryData.yml");
         return new Config(PlayerInventoryData);
     }
 
-    public void ReturnBag(){
+    public void ReturnBag() {
 
         String[] pls = ((ArrayList<String>) GD().get("玩家")).toArray(new String[0]);
 
@@ -39,16 +39,16 @@ public class bag extends AsyncTask {
             Config llv = IV();
             HashMap<Integer, HashMap<String, Object>> all = (HashMap<Integer, HashMap<String, Object>>) llv.get(pn);
 
-            for (int i = 0; i < 36 ; i++) {
+            for (int i = 0; i < 36; i++) {
 
                 HashMap<String, Object> single = all.get(i);
 
                 Item item;
 
-                if(Integer.parseInt(single.get("id").toString())  != 0) {
+                if (Integer.parseInt(single.get("id").toString()) != 0) {
                     item = Item.get(Integer.parseInt(single.get("id").toString()), Integer.parseInt(single.get("damage").toString()), Integer.parseInt(single.get("count").toString()));
 
-                    if(!single.get("nbt").toString().equals("无")){
+                    if (!single.get("nbt").toString().equals("无")) {
                         item = Item.get(Integer.parseInt(single.get("id").toString()), Integer.parseInt(single.get("damage").toString()), Integer.parseInt(single.get("count").toString()), single.get("nbt").toString().getBytes());
                     }
 
@@ -64,7 +64,6 @@ public class bag extends AsyncTask {
 
         }
     }
-
 
 
     @Override

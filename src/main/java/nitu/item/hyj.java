@@ -3,7 +3,7 @@ package nitu.item;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.EnchantmentFireAspect;
 
-public class hyj extends EnchantmentFireAspect{
+public class hyj extends EnchantmentFireAspect {
 
     public Item item() {
         Item item = new Item(268, 0, 1);

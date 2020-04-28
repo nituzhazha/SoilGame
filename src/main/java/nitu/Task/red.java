@@ -12,9 +12,9 @@ public class red extends AsyncTask {
     public main se;
     public String RoomName;
 
-    public red(main s , String r){
-    RoomName = r;
-    se = s;
+    public red(main s, String r) {
+        RoomName = r;
+        se = s;
     }
 
     public Config GD() {
@@ -28,9 +28,7 @@ public class red extends AsyncTask {
     }
 
 
-
-
-    public void rednum(){
+    public void rednum() {
         Config gd = GD();
         int num = Integer.parseInt(gd.get("红方分数").toString());
         HashMap<String, HashMap<String, Double>> list = (HashMap<String, HashMap<String, Double>>) GS().get("红队堆土点");
@@ -97,7 +95,7 @@ public class red extends AsyncTask {
             biz = z2;
         }
 
-        if(smx != null && smz != null && smy != null && bix != null && biz != null && biy != null) {
+        if (smx != null && smz != null && smy != null && bix != null && biz != null && biy != null) {
 
             for (Double x = smx; x <= bix; x++) {
 
@@ -106,27 +104,26 @@ public class red extends AsyncTask {
                     for (Double y = smy; y <= biy; y++) {
 
 
-                        if(se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue() , y.intValue() ,z.intValue()) == 2){
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 2) {
 
-                            gd.set("红方分数" , num+2);
+                            gd.set("红方分数", num + 2);
                             gd.save();
 
                         }
 
-                        if(se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue() , y.intValue() ,z.intValue()) == 3){
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 3) {
 
-                            gd.set("红方分数" , num+1);
+                            gd.set("红方分数", num + 1);
                             gd.save();
 
                         }
 
-                        if(se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue() , y.intValue() ,z.intValue()) == 82){
+                        if (se.getServer().getLevelByName(RoomName).getBlockIdAt(x.intValue(), y.intValue(), z.intValue()) == 82) {
 
-                            gd.set("红方分数" , num+3);
+                            gd.set("红方分数", num + 3);
                             gd.save();
 
                         }
-
 
 
                     }
@@ -135,7 +132,6 @@ public class red extends AsyncTask {
             }
         }
     }
-
 
 
     @Override

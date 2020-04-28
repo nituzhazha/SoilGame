@@ -80,7 +80,7 @@ public class goods implements Listener {
 
                 case 0://玻璃 2土
 
-                    Item it1 = Item.get(3, 0 , 2);
+                    Item it1 = Item.get(3, 0, 2);
                     Item w1 = Item.get(20, 0, 16);
 
 
@@ -704,12 +704,6 @@ public class goods implements Listener {
         }
 
     }
-
-
-
-
-
-
 
 
 }
